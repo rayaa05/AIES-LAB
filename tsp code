@@ -1,0 +1,62 @@
+import random
+
+def tsp_hill(tsp):
+    sol = rand_sol(len(tsp))
+    cost = calc_cost(tsp, sol)
+
+    while True:
+        neigh = neighbours(sol)
+        best = sol
+        best_cost = cost
+
+        for n in neigh:
+            c = calc_cost(tsp, n)
+            if c < best_cost:
+                best = n
+                best_cost = c
+
+        if best_cost >= cost:
+            break
+
+        sol = best
+        cost = best_cost
+
+    return sol, cost
+
+
+def rand_sol(n):
+    s = list(range(n))
+    random.shuffle(s)
+    return s
+
+
+def calc_cost(tsp, s):
+    total = 0
+    for i in range(len(s)):
+        a = s[i]
+        b = s[(i+1) % len(s)]
+        total += tsp[a][b]
+    return total
+
+
+def neighbours(s):
+    nb = []
+    for i in range(len(s)):
+        for j in range(i+1, len(s)):
+            t = s[:]
+            t[i], t[j] = t[j], t[i]
+            nb.append(t)
+    return nb
+
+
+n = int(input("Enter number of cities: "))
+
+tsp = []
+print("Enter distance matrix:")
+
+for i in range(n):
+    row = list(map(int, input().split()))
+    tsp.append(row)
+ans = tsp_hill(tsp)
+print("Best route:", ans[0])
+print("Minimum cost is:", ans[1])
